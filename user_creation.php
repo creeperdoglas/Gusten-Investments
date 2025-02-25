@@ -2,13 +2,15 @@
 // Om formuläret skickas via POST, hantera datainsättningen
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // 1. Hämta in data från formuläret
-    $email         = $_POST['email']        ?? '';
-    $phone         = $_POST['phone']        ?? '';
-    $address       = $_POST['address']      ?? '';
-    $address2      = $_POST['address2']     ?? '';
-    $postnummer    = $_POST['Postnummer']   ?? '';
-    $stad          = $_POST['stad']         ?? '';
-    $password      = $_POST['password']     ?? '';
+    $firstName     = $_POST['firstName']     ?? '';
+    $surName       = $_POST['surName']       ?? '';
+    $email         = $_POST['email']         ?? '';
+    $phone         = $_POST['phone']         ?? '';
+    $address       = $_POST['address']       ?? '';
+    $address2      = $_POST['address2']      ?? '';
+    $postnummer    = $_POST['Postnummer']    ?? '';
+    $stad          = $_POST['stad']          ?? '';
+    $password      = $_POST['password']      ?? '';
     $confirmPass   = $_POST['confirmPassword'] ?? '';
     
     // 2. Validera att lösenorden matchar
@@ -18,9 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // 3. Hasha lösenordet
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        // 4. Förifyll investerat, risk1, risk2, risk3 (heltal)
-        //    Just nu sätter vi dem till 0 eller valfritt startvärde. 
-        //    Du kan även hämta in dem från formuläret om du vill att användaren ska välja risker direkt.
+        // 4. Startvärden för investerat och risk
         $investerat = 0; 
         $risk1      = 0;
         $risk2      = 0;
@@ -35,31 +35,58 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $pdo = new PDO($dsn, $dbUser, $dbPass);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            // 6. Förbered en INSERT-sats
-            $sql = "INSERT INTO users (email, phone, address, address2, postnummer, stad, password_hash, investerat, risk1, risk2, risk3)
-                    VALUES (:email, :phone, :address, :address2, :postnummer, :stad, :hash, :investerat, :risk1, :risk2, :risk3)";
+            // 6. Förbered en INSERT-sats med first_name och sur_name
+            $sql = "INSERT INTO users (
+                        first_name, 
+                        sur_name, 
+                        email, 
+                        phone, 
+                        address, 
+                        address2, 
+                        postnummer, 
+                        stad, 
+                        password_hash, 
+                        investerat, 
+                        risk1, 
+                        risk2, 
+                        risk3
+                    ) VALUES (
+                        :firstName, 
+                        :surName, 
+                        :email, 
+                        :phone, 
+                        :address, 
+                        :address2, 
+                        :postnummer, 
+                        :stad, 
+                        :hash, 
+                        :investerat, 
+                        :risk1, 
+                        :risk2, 
+                        :risk3
+                    )";
 
             $stmt = $pdo->prepare($sql);
 
-            // 7. Binda parametrar och köra
-            $stmt->bindParam(':email',       $email);
-            $stmt->bindParam(':phone',       $phone);
-            $stmt->bindParam(':address',     $address);
-            $stmt->bindParam(':address2',    $address2);
-            $stmt->bindParam(':postnummer',  $postnummer);
-            $stmt->bindParam(':stad',        $stad);
-            $stmt->bindParam(':hash',        $hashedPassword);
-            $stmt->bindParam(':investerat',  $investerat, PDO::PARAM_INT);
-            $stmt->bindParam(':risk1',       $risk1,      PDO::PARAM_INT);
-            $stmt->bindParam(':risk2',       $risk2,      PDO::PARAM_INT);
-            $stmt->bindParam(':risk3',       $risk3,      PDO::PARAM_INT);
+            // 7. Binda parametrar
+            $stmt->bindParam(':firstName',    $firstName);
+            $stmt->bindParam(':surName',      $surName);
+            $stmt->bindParam(':email',        $email);
+            $stmt->bindParam(':phone',        $phone);
+            $stmt->bindParam(':address',      $address);
+            $stmt->bindParam(':address2',     $address2);
+            $stmt->bindParam(':postnummer',   $postnummer);
+            $stmt->bindParam(':stad',         $stad);
+            $stmt->bindParam(':hash',         $hashedPassword);
+            $stmt->bindParam(':investerat',   $investerat, PDO::PARAM_INT);
+            $stmt->bindParam(':risk1',        $risk1,      PDO::PARAM_INT);
+            $stmt->bindParam(':risk2',        $risk2,      PDO::PARAM_INT);
+            $stmt->bindParam(':risk3',        $risk3,      PDO::PARAM_INT);
 
+            // 8. Kör INSERT
             $stmt->execute();
 
-            // 8. Meddela att skapandet lyckades eller gör en redirect
-            //    T.ex. spara en sessionsvariabel eller visa meddelande
             $successMessage = "Användare skapades! Du kan nu logga in.";
-
         } catch (PDOException $e) {
             $errorMessage = "Fel vid databasanslutning eller INSERT: " . $e->getMessage();
         }
@@ -100,6 +127,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       <?php endif; ?>
 
       <form id="createUserForm" action="" method="POST">
+
+        <!-- FÖRNAMN och EFTERNAMN -->
+        <label for="firstName">Förnamn</label>
+        <input type="text" id="firstName" name="firstName" required>
+
+        <label for="surName">Efternamn</label>
+        <input type="text" id="surName" name="surName" required>
+
         <label for="email">E-post</label>
         <input type="email" id="email" name="email" required>
 
@@ -127,7 +162,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <button type="submit">Skapa konto</button>
       </form>
       
-      <!-- Tillbaka-knapp, t ex: -->
+      <!-- Tillbaka-knapp -->
       <div style="margin-top: 1rem; text-align: center;">
         <a href="index.php" class="back-link">Gå tillbaka</a>
       </div>
@@ -150,4 +185,3 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 </body>
 </html>
-

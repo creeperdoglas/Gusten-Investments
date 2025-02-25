@@ -228,6 +228,18 @@ body {
   background-color: #666;
 }
 
+.user-menu .menu-item a {
+  color: #fff;
+  /* Vit text */
+  text-decoration: none;
+  /* Ingen understrykning (om du vill) */
+}
+
+.user-menu .menu-item a:hover {
+  color: #ccc;
+  /* Lite ljusgrå vid hover */
+}
+
 /* --------- SKAPA ANVÄNDARE-SIDA -------- */
 
 /* Speciell klass på body för användarskapande-sidan */
