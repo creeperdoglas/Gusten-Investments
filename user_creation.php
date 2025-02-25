@@ -28,8 +28,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         // 5. Koppla upp mot databasen via PDO
         $dsn = 'mysql:host=localhost;dbname=gusten_investments;charset=utf8mb4';
-        $dbUser = 'root';      // Exempel, ändra till ditt db-användarnamn
-        $dbPass = 'mIssAn04';  // Exempel, ändra till ditt db-lösenord
+        $dbUser = 'min_anvandare';      
+        $dbPass = 'mIssAn04';  
 
         try {
             $pdo = new PDO($dsn, $dbUser, $dbPass);
@@ -86,14 +86,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <div class="create-user-box">
       <h2>Skapa användare</h2>
       
-      <!-- Om felmeddelande finns, skriv ut -->
+      <!-- Eventuella fel- och framgångsmeddelanden -->
       <?php if (!empty($errorMessage)): ?>
         <div style="color: #f66; margin-bottom: 1rem;">
           <?php echo htmlspecialchars($errorMessage); ?>
         </div>
       <?php endif; ?>
 
-      <!-- Om lyckat skapande -->
       <?php if (!empty($successMessage)): ?>
         <div style="color: #6f6; margin-bottom: 1rem;">
           <?php echo htmlspecialchars($successMessage); ?>
@@ -127,18 +126,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         <button type="submit">Skapa konto</button>
       </form>
+      
+      <!-- Tillbaka-knapp, t ex: -->
+      <div style="margin-top: 1rem; text-align: center;">
+        <a href="index.php" class="back-link">Gå tillbaka</a>
+      </div>
     </div>
   </main>
 
   <script>
-    // Enkel kontroll av att lösenord matchar (på klientsidan)
+    // Enkel klient-side-kontroll av att lösenorden matchar
     const form = document.getElementById('createUserForm');
     form.addEventListener('submit', (e) => {
       const password        = document.getElementById('password').value;
       const confirmPassword = document.getElementById('confirmPassword').value;
 
       if(password !== confirmPassword) {
-        e.preventDefault();
+        e.preventDefault(); 
         alert("Lösenorden stämmer inte överens. Försök igen.");
       }
     });
@@ -146,3 +150,4 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 </body>
 </html>
+
