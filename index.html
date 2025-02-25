@@ -5,9 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>G-Invest</title>
-  <!-- Länkar till vår CSS-fil -->
+  <!-- Länkar till CSS och Font Awesome -->
   <link rel="stylesheet" href="master.css">
-  <!-- Länkar till Font Awesome (ikonbibliotek) -->
   <script src="https://kit.fontawesome.com/bfa6b27da4.js" crossorigin="anonymous"></script>
 </head>
 
@@ -16,10 +15,16 @@
   <!-- Toppmeny -->
   <header class="top-bar">
     <div class="brand">G-Invest</div>
-    <!-- Användarikon i stället för texten "Användare" -->
-    <div class="user">
-      <i class="fa-regular fa-circle-user"></i>
-      <!-- <i class="fas fa-user"></i> -->
+    <!-- Användarikon -->
+    <div class="user" id="userIcon">
+      <i class="fa-solid fa-user"></i>
+      <!-- Liten meny (hamburgar-lik) som dyker upp på klick -->
+      <div class="user-menu" id="userMenu">
+        <div class="menu-item" id="loginBtn">
+          <i class="fa-solid fa-bars"></i>
+          <span>Logga in</span>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -29,25 +34,25 @@
       <ul>
         <li>
           <a href="#">
-            <i class="fas fa-home"></i>
+            <i class="fa-solid fa-home"></i>
             <span>Hem</span>
           </a>
         </li>
         <li>
           <a href="#">
-            <i class="fas fa-newspaper"></i>
+            <i class="fa-solid fa-newspaper"></i>
             <span>Nyheter</span>
           </a>
         </li>
         <li>
           <a href="#">
-            <i class="fas fa-briefcase"></i>
+            <i class="fa-solid fa-briefcase"></i>
             <span>Portfölj</span>
           </a>
         </li>
         <li>
           <a href="#">
-            <i class="fas fa-chart-line"></i>
+            <i class="fa-solid fa-chart-line"></i>
             <span>Aktivitet</span>
           </a>
         </li>
@@ -64,6 +69,63 @@
       </p>
     </div>
   </main>
+
+  <!-- Modal för inloggning (overlay) -->
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal-content">
+      <h2>Logga in</h2>
+      <form>
+        <label for="username">Användarnamn</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Lösenord</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">Logga in</button>
+      </form>
+      <!-- Skapa användare-länk med ljusröd färg -->
+      <p>Har du inget konto?
+        <a href="user_creation.php" class="create-account-link">Skapa användare</a>
+      </p>
+
+      <!-- Stäng-knappen: ligger i mitten -->
+      <div class="close-button-wrapper">
+        <button class="close-modal" id="closeModalBtn">Stäng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS för meny + modal -->
+  <script>
+    const userIcon = document.getElementById('userIcon');
+    const userMenu = document.getElementById('userMenu');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginModal = document.getElementById('loginModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    // Visa/dölj menyn vid klick på användarikonen
+    userIcon.addEventListener('click', () => {
+      userMenu.classList.toggle('show');
+    });
+
+    // Öppna modal vid klick på "Logga in"
+    loginBtn.addEventListener('click', () => {
+      loginModal.classList.add('active');
+      userMenu.classList.remove('show'); // stänger menyn
+    });
+
+    // Stäng modal
+    closeModalBtn.addEventListener('click', () => {
+      loginModal.classList.remove('active');
+    });
+
+    // Klick utanför modal-content => stäng modalen
+    loginModal.addEventListener('click', (e) => {
+      if (e.target === loginModal) {
+        loginModal.classList.remove('active');
+      }
+    });
+  </script>
 
 </body>
 
